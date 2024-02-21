@@ -1,0 +1,68 @@
+name: Build and Release Spring Petclinic Native Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    #strategy:
+    #  matrix:
+    #    java: [ '21' ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: latest
+          java-version: 21
+          distribution: graalvm
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare
+        id: prep
+        run: |
+          build_id=0.1.$(git rev-list --count HEAD)
+          echo "::set-output name=VERSION::${build_id}"
+
+      #- name: Generate images meta
+      #  id: meta
+      #  uses: docker/metadata-action@v5
+      #  with:
+      #    images: |
+      #      ghcr.io/deas/spring-petclinic-native
+      #    tags: |
+      #      type=raw,value=${{ steps.prep.outputs.VERSION }}
+      #      type=raw,value=latest
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password:  ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build artifact
+        run: mvn -Pnative -DskipTests=true spring-boot:build-image -Dspring-boot.build-image.imageName=spring-petclinic-native
+
+      - name: Tag and push
+        run: |
+          docker tag spring-petclinic-native:latest ghcr.io/deas/spring-petclinic-native:latest
+          docker tag spring-petclinic-native:latest ghcr.io/deas/spring-petclinic-native:${{ steps.prep.outputs.VERSION }}
+          docker push -a ghcr.io/deas/spring-petclinic-native
+
+      #- name: Build and push Docker image
+      #  uses: docker/build-push-action@v2
+      #  with:
+      #    context: .
+      #    push: true
+      #    tags: ghcr.io/${{ github.repository_owner }}/spring-petclinic-native:latest
