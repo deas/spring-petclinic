@@ -16,15 +16,54 @@
 
 package org.springframework.samples.petclinic.system;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.instrumentation.okhttp.v3_0.OkHttpTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @Controller
 class WelcomeController {
 
+	@Autowired
+	OpenTelemetry openTelemetry;
+
 	@GetMapping("/")
 	public String welcome() {
+		// var url = "http://localhost:1234";
+		var url = "https://www.google.com";
+		httpGet(openTelemetry, url);
 		return "welcome";
+	}
+
+	// Use this Call.Factory implementation for making standard http client calls.
+	public Call.Factory createTracedClient(OpenTelemetry openTelemetry) {
+		return OkHttpTelemetry.builder(openTelemetry).build().newCallFactory(createClient());
+	}
+
+	// your configuration of the OkHttpClient goes here:
+	private OkHttpClient createClient() {
+		return new OkHttpClient.Builder().build();
+	}
+
+	void httpGet(OpenTelemetry openTelemetry, String url) {
+		Call.Factory client = createTracedClient(openTelemetry);
+		Request request = new Request.Builder().url(url).build();
+		Call call = client.newCall(request);
+		try {
+			Response response = call.execute();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -1,0 +1,27 @@
+version: '3.9'
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+networks:
+  default:
+    name: opentelemetry-demo
+    driver: bridge
+services:
+  app:
+    image: ${IMAGE_NAME}:${IMAGE_VERSION}
+    environment:
+      - OTEL_SERVICE_NAME=spring-petclinic
+      # - APPLICATIONINSIGHTS_CONNECTION_STRING="{CONNECTION_STRING}"
+      # - APPLICATIONINSIGHTS_SELF_DIAGNOSTICS_LEVEL=DEBUG
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://${OTEL_COLLECTOR_HOST}:${OTEL_COLLECTOR_PORT_HTTP}
+      - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+      - OTEL_RESOURCE_ATTRIBUTES
+      # Logs are disabled by default
+      - OTEL_LOGS_EXPORTER=otlp
+    ports:
+      - "8080:8080"
+    #depends_on:
+    #  - otelcol
+    #logging: *logging

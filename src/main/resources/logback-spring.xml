@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--
+   Native creates logging at build time -> does not support logging.config at runtime
+   logback janino has issues with spring native
+
+   Structured logging could be covered by spring-cloud-azure-starter-monitor (otel)
+
+   Rebuilding dynamic file appender using xml
+
+   https://github.com/spring-projects/spring-boot/blob/3.2.x/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/logback/DefaultLogbackConfiguration.java
+   https://github.com/spring-projects/spring-boot/issues/33758
+   https://github.com/spring-projects/spring-boot/issues/25847
+-->
+	<!--springProfile name="!xyz"-->
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+	<!--/springProfile-->
+
+	<!--appender name="OpenTelemetry" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender"></appender-->
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+		<!--appender-ref ref="OpenTelemetry"/-->
+	</root>
+
+</configuration>

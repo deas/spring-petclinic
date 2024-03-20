@@ -15,7 +15,10 @@ gradle.startParameter.excludedTaskNames += [ "checkFormatAot", "checkFormatAotTe
 
 group = 'org.springframework.samples'
 version = '3.2.0'
-sourceCompatibility = '17'
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
   mavenCentral()
@@ -30,6 +33,12 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'io.opentelemetry.instrumentation:opentelemetry-okhttp-3.0:2.1.0-alpha'
+  implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+  // override 3.0.0 version from okhttp - which break ClassNotFoundException with spring boot 3 -->
+  // implementation 'com.squareup.okio:okio-jvm:3.7.0'
+  // implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.35.0'
+
   implementation 'javax.cache:cache-api'
   implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
   runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
@@ -47,6 +56,21 @@ dependencies {
   testImplementation 'org.testcontainers:mysql'
   checkstyle 'io.spring.javaformat:spring-javaformat-checkstyle:0.0.41'
   checkstyle 'com.puppycrawl.tools:checkstyle:10.12.5'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("io.opentelemetry:opentelemetry-bom:1.35.0")
+        mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:2.1.0-alpha")
+    }
+}
+
+graalvmNative {
+  binaries {
+    main {
+      buildArgs('-Djava.security.properties=' + file("$rootDir/custom.security").absolutePath)
+    }
+  }
 }
 
 tasks.named('test') {

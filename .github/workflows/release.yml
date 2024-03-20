@@ -28,6 +28,16 @@ jobs:
           components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      #- name: Download dependencies
+      #  run: mvn -B dependency:go-offline
+
       - name: Prepare
         id: prep
         run: |

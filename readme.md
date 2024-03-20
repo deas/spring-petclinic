@@ -2,7 +2,9 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
 
-Modified targeting native Azure Container Apps with Insights : [Monitor your Spring Boot native image application on Azure](https://devblogs.microsoft.com/java/monitor-your-spring-boot-native-image-application-on-azure/)
+☝️: Modded with for OpenTelemetry experiments
+
+See [Spring PetClinic Observability](./observability.md) for details around the introduced Observability bits.
 
 ## Understanding the Spring Petclinic application with a few diagrams
 
@@ -61,6 +63,23 @@ or
 
 ```bash
 docker run -e POSTGRES_USER=petclinic -e POSTGRES_PASSWORD=petclinic -e POSTGRES_DB=petclinic -p 5432:5432 postgres:16.1
+```
+
+Assuming you have a proper environment variable set, `APPLICATIONINSIGHTS_CONNECTION_STRING` should bring up the container linked to Azure Application Insights: 
+```bash
+docker run -e APPLICATIONINSIGHTS_CONNECTION_STRING=${APPLICATIONINSIGHTS_CONNECTION_STRING}" -p 8080:8080 ghcr.io/deas/spring-petclinic-native:latest
+```
+
+For some tasks, we currently [(a)buse `make`](./Makefile). Running
+```bash
+make
+```
+Should give you a list of available targets.
+
+Assuming you have an Azure Container Environment available, you can create an app with the following command:
+
+```bash
+make AZ_ENV=<your-env> AZ_RG=<your-resource-group> az-create-app
 ```
 
 Further documentation is provided for [MySQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt)
