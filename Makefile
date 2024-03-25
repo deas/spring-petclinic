@@ -138,7 +138,12 @@ az-delete-app: ## Delete Azure Container App Instance (Undeploy)
 
 .PHONY: otel-svc-up
 otel-svc-up: ## Start OpenTelemetry Services
-	cd otel-svc && docker compose up --force-recreate --remove-orphans --detach
+	docker compose up -f otel-svc/docker-compose.yml --force-recreate --remove-orphans
+
+
+.PHONY: signoz-svc-up
+signoz-svc-up: ## Start SigNoz Services - UI at port 3301
+	docker compose up -f signoz-svc/clickhouse-setup/docker-compose.yaml
 
 #.PHONY: docker-push
 #docker-push: ## Push images to Registry

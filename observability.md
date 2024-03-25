@@ -21,12 +21,16 @@ to see some workflow entry points.
 - `spring-cloud-azure-starter-monitor` is a thin layer on top of `opentelemetry-spring-boot-starter`. Exporters are named `azure_monitor` instead of `otlp`.
 - As of `spring-cloud-azure-starter-monitor:1.0.0-beta.4`, there appears to be a tight coupling to specific versions of `opentelemetry-bom` and/or `opentelemetry-instrumentation-bom-alpha`. Bumping to `1.35` / `2.2.0-alpha` failed falling back to `opentelemetry-spring-boot-starter` behaviour.
 - `GlobalOpenTelemetry.get()` does not return the expected instance. We should get it via `@AutoWired`.
-- `WebMvcTelemetryProducingFilter` from `spring-webmvc` is does most of what we want out of the box. Except for providing us with span name updates for anything not based on `@RequestMapping`. We end up with `GET` instead of `GET /foo`.
+- `WebMvcTelemetryProducingFilter` from `spring-webmvc` is does most of what we want out of the box. Except for providing us with span name updates for anything not based on `@RequestMapping`. We end up with `GET` instead of `GET /foo`. This is likely by design, because we want pattern `/car/{id}` to be covered by the same span. However, `request.getRequestURI()` still appears better than nothing. We implemented a quick solution extending the Spring defaults. This should probably go upstream?
 
 ## TODO
 - [ ] Improve switch `azure_monitor` <-> `otlp` w/o changing the compile time dependency
+- [ ] Provide/Test Drive [Signoz](https://github.com/SigNoz/signoz) Service (all 3 Pillars)
+- [ ] Provide/Test Drive [Grafana](https://grafana.com) (all 3 pillars)
+- [ ] Query Strings in Azure Insights don't show up in the `Request`/`Dependency` spans. Appears realted to [`com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java`](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-opentelemetry-exporter/src/main/java/com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java)
 
 ## References
+- [Configure Azure Monitor OpenTelemetry](https://learn.microsoft.com/de-de/azure/azure-monitor/app/)opentelemetry-configuration?tabs=java)
 - Native Azure Container Apps with Insights : [Monitor your Spring Boot native image application on Azure](https://devblogs.microsoft.com/java/monitor-your-spring-boot-native-image-application-on-azure/)
 - Bare [OpenTelemetry Spring Native](https://github.com/open-telemetry/opentelemetry-java-examples/tree/main/spring-native)
 

@@ -33,6 +33,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter'
+
   implementation 'io.opentelemetry.instrumentation:opentelemetry-okhttp-3.0:2.1.0-alpha'
   implementation 'com.squareup.okhttp3:okhttp:4.10.0'
   // override 3.0.0 version from okhttp - which break ClassNotFoundException with spring boot 3 -->
@@ -64,6 +66,14 @@ dependencyManagement {
         mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:2.1.0-alpha")
     }
 }
+
+/*
+configurations {
+    resolutionStrategy {
+        force 'com.azure:azure-monitor-opentelemetry-exporter:jar:1.0.0-beta.21'
+    }
+}
+*/
 
 graalvmNative {
   binaries {

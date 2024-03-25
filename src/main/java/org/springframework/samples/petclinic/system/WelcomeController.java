@@ -39,7 +39,7 @@ class WelcomeController {
 	@GetMapping("/")
 	public String welcome() {
 		// var url = "http://localhost:1234";
-		var url = "https://www.google.com";
+		var url = "https://www.google.com?q=OpenTelemetry";
 		httpGet(openTelemetry, url);
 		return "welcome";
 	}

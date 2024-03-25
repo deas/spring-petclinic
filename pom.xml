@@ -235,7 +235,7 @@
                             <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>
                             <sourceDirectories>${basedir}</sourceDirectories>
                             <includes>**/*</includes>
-                            <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class,otel-svc/**/*</excludes>
+                            <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class,signoz-svc/**/*,otel-svc/**/*</excludes>
                             <propertyExpansion>
                                 config_loc=${basedir}/src/checkstyle/
                             </propertyExpansion>
@@ -497,6 +497,20 @@
                 <version>2.1.0-alpha</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- Upstream fix for query string in REQUEST -->
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-monitor-opentelemetry-exporter</artifactId>
+                <version>1.0.0-beta.21</version>
+            </dependency>
+             <!-- beta.21 native regression
+             com.azure.core.util.logging.ClientLogger was unintentionally initialized at build time. To see why com.azure.core.util.logging.ClientLogger got initialized ...
+              -->
+             <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-core</artifactId>
+                <version>1.46.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

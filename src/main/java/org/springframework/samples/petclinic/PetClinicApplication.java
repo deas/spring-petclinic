@@ -18,11 +18,20 @@ package org.springframework.samples.petclinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.ImportRuntimeHints;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.DispatcherServlet;
+import jakarta.servlet.Filter;
 
-import java.util.Locale;
+import de.contentreich.opentelemetry.instrumentation.spring.web.SpringWebMvcTelemetry;
+import io.opentelemetry.api.OpenTelemetry;
+// import io.opentelemetry.instrumentation.spring.autoconfigure.internal.SdkEnabled;
 
 /**
  * PetClinic Spring Boot Application.
@@ -36,6 +45,16 @@ public class PetClinicApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetClinicApplication.class, args);
+	}
+
+	// @ConditionalOnBean(OpenTelemetry.class)
+	// @ConditionalOnClass({ Filter.class, OncePerRequestFilter.class,
+	// DispatcherServlet.class })
+	@ConditionalOnExpression("'${otel.instrumentation.spring-webmvc.enabled}'=='false' && '${contentreich.otel.instrumentation.spring.enabled}'=='true'")
+	// @Conditional(SdkEnabled.class)
+	@Bean
+	Filter otelWebMvcFilter(OpenTelemetry openTelemetry) {
+		return SpringWebMvcTelemetry.create(openTelemetry).createServletFilter();
 	}
 
 }
