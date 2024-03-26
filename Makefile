@@ -67,7 +67,7 @@ download-agents: ## Download OpenTelemetry and Application Insights agents
 	curl https://repo1.maven.org/maven2/io/opentelemetry/javaagent/opentelemetry-javaagent/$(OTEL_VERSION)/$(OTEL_AGENT) \
 		-o $(OTEL_AGENT)
 	curl https://repo1.maven.org/maven2/com/microsoft/azure/applicationinsights-agent/$(INSIGHTS_VERSION)/$(INSIGHTS_AGENT) \
- 		-o $(INSIGHTS_AGENT)
+    -o $(INSIGHTS_AGENT)
 
 .PHONY: run-sb
 run-sb: ## Run application with Spring Boot Maven Plugin
@@ -138,12 +138,16 @@ az-delete-app: ## Delete Azure Container App Instance (Undeploy)
 
 .PHONY: otel-svc-up
 otel-svc-up: ## Start OpenTelemetry Services
-	docker compose up -f otel-svc/docker-compose.yml --force-recreate --remove-orphans
+	docker compose -f otel-svc/docker-compose.yml --force-recreate --remove-orphans up
 
 
 .PHONY: signoz-svc-up
 signoz-svc-up: ## Start SigNoz Services - UI at port 3301
-	docker compose up -f signoz-svc/clickhouse-setup/docker-compose.yaml
+	docker compose -f signoz-svc/clickhouse-setup/docker-compose.yaml up
+
+.PHONY: aspire-dashboard-svc-up
+aspire-dashboard-svc-up: ## Aspire Dashboard UI at port 18888
+    docker run --rm -it -p 18888:18888 -p 4317:18889 --name aspire-dashboard mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
 
 #.PHONY: docker-push
 #docker-push: ## Push images to Registry

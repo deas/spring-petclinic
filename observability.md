@@ -42,3 +42,4 @@ to see some workflow entry points.
 [org.springframework.boot.autoconfigure.AutoConfiguration.imports](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/spring-cloud-azure-starter-monitor/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports)
 - [Set up and observe a Spring Boot application with Grafana Cloud, Prometheus, and OpenTelemetry](https://grafana.com/blog/2022/04/26/set-up-and-observe-a-spring-boot-application-with-grafana-cloud-prometheus-and-opentelemetry/)
 - [Send logs to Loki with Loki receiver](https://grafana.com/docs/opentelemetry/collector/send-logs-to-loki/loki-receiver/)/[Support receiving logs in Loki using OpenTelemetry OTLP](https://github.com/grafana/loki/issues/5346)
+- [.NET Aspire dashboard is the best tool to visualize your OpenTelemetry data during local development](https://anthonysimmon.com/dotnet-aspire-dashboard-best-tool-visualize-opentelemetry-local-dev/)
