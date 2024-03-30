@@ -1,9 +1,9 @@
 services:
-  # otel-svc:
-  #   image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
-  #   ports:
+  otel-svc:
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
+    ports:
   #     - "18888:18888"
-  #     - "4317:18889"
+     - "4317:18889"
   app:
     image: maven:3-eclipse-temurin-21
     working_dir: /workspace
@@ -14,6 +14,7 @@ services:
     command: [ 'mvn', '-P+otlp,-azure-monitor', '-DskipTests=true', 'spring-boot:run' ]
     environment:
       OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-svc:18889
       # APPLICATIONINSIGHTS_CONNECTION_STRING: "mute"
       # JAVA_TOOL_OPTIONS: >- 
       #   -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80
