@@ -1,0 +1,30 @@
+services:
+  # otel-svc:
+  #   image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
+  #   ports:
+  #     - "18888:18888"
+  #     - "4317:18889"
+  app:
+    image: maven:3-eclipse-temurin-21
+    volumes:
+      - /root/.m2
+      - .:/work
+    # -P+otlp,-azure-monitor  
+    command: [ 'mvn', '-w', '/workspace', '-P+otlp,-azure-monitor', '-DskipTests=true', 'spring-boot:run' ]
+    environment:
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      # APPLICATIONINSIGHTS_CONNECTION_STRING: "mute"
+      # JAVA_TOOL_OPTIONS: >- 
+      #   -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80
+    # Attach a debugger
+    #    -agentlib:jdwp=transport=dt_socket,server=y,address=0.0.0.0:8009,suspend=n
+    # Use the volume above if you want to try application.properties from a file.
+    #    -Dspring.config.location=classpath:/application.properties,file:./application-custom.properties
+    ports:
+      - "8080:8080"
+
+# OTEL_AGENT=opentelemetry-javaagent-$(OTEL_VERSION).jar
+# INSIGHTS_VERSION=3.4.19
+# INSIGHTS_AGENT=applicationinsights-agent-$(INSIGHTS_VERSION).jar
+# AGENT=$(INSIGHTS_AGENT)
+# SB_RUN_JVM_ARGS=-Dspring-boot.run.jvmArguments="-javaagent:./$(AGENT)"
