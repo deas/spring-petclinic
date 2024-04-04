@@ -3,6 +3,7 @@ HELP-DESCRIPTION-SPACING := 24
 
 APP=spring-petclinic
 MVN_EXTRA_OPTS=-DskipTests=true
+# -P-otlp,+azure-monitor
 AZ_LOCATION=germanywestcentral
 AZ_RG=none
 AZ_ENV=$(APP)
