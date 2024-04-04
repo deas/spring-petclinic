@@ -2,11 +2,10 @@
 The Spring PetClinic application modded for OpenTelemetry based observability targetting:
 
 - Spring Native
+- OTLP based Services
 - Azure Monitor/Insights
 - Compatibility with plain Java version
 - Span parenting/propagation through http Span(Server) -> Span(Client) (via `okhttp`)
-
-We aim at making `otlp` exporter a first class citizen next to `azure_monitor`.
 
 Try
 ```shell
@@ -14,6 +13,14 @@ make
 ``` 
 
 to see some workflow entry points.
+
+Default target is OTLP.
+
+You can switch to Azure monitor by passing `MVN_EXTRA_OPTS` to `make`, e.g.
+
+```shell
+make MVN_EXTRA_OPTS="-DskipTests=true -P-otlp,+azure-monitor" build
+```
 
 ## Key findings
 - Native + Plain Java Compatibility rules out the use of `javaagent` based instrumentation
@@ -24,10 +31,10 @@ to see some workflow entry points.
 - `WebMvcTelemetryProducingFilter` from `spring-webmvc` is does most of what we want out of the box. Except for providing us with span name updates for anything not based on `@RequestMapping`. We end up with `GET` instead of `GET /foo`. This is likely by design, because we want pattern `/car/{id}` to be covered by the same span. However, `request.getRequestURI()` still appears better than nothing. We implemented a quick solution extending the Spring defaults. This should probably go upstream?
 
 ## TODO
-- [ ] Improve switch `azure_monitor` <-> `otlp` w/o changing the compile time dependency
+- [x] Improve switch `azure_monitor` <-> `otlp` w/o changing the compile time dependency
 - [ ] Provide/Test Drive [Signoz](https://github.com/SigNoz/signoz) Service (all 3 Pillars)
 - [ ] Provide/Test Drive [Grafana](https://grafana.com) (all 3 pillars)
-- [ ] Query Strings in Azure Insights don't show up in the `Request`/`Dependency` spans. Appears realted to [`com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java`](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-opentelemetry-exporter/src/main/java/com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java)
+- [x] Query Strings in Azure Insights don't show up in the `Request`/`Dependency` spans. Appears realted to [`com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java`](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-opentelemetry-exporter/src/main/java/com/azure/monitor/opentelemetry/exporter/implementation/SpanDataMapper.java)
 
 ## References
 - [Configure Azure Monitor OpenTelemetry](https://learn.microsoft.com/de-de/azure/azure-monitor/app/)opentelemetry-configuration?tabs=java)

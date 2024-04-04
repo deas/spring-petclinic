@@ -3,6 +3,7 @@ HELP-DESCRIPTION-SPACING := 24
 
 APP=spring-petclinic
 MVN_EXTRA_OPTS=-DskipTests=true
+# -P-otlp,+azure-monitor
 AZ_LOCATION=germanywestcentral
 AZ_RG=none
 AZ_ENV=$(APP)
@@ -147,7 +148,7 @@ signoz-svc-up: ## Start SigNoz Services - UI at port 3301
 
 .PHONY: aspire-dashboard-svc-up
 aspire-dashboard-svc-up: ## Aspire Dashboard UI at port 18888
-    docker run --rm -it -p 18888:18888 -p 4317:18889 --name aspire-dashboard mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
+	docker run --rm -it -p 18888:18888 -p 4317:18889 --name aspire-dashboard mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.4
 
 #.PHONY: docker-push
 #docker-push: ## Push images to Registry
